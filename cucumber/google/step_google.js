@@ -13,6 +13,15 @@ var google = function() {
 	});
 
 
+    // filter area as "國家/地區：台灣"
+    When(/filter area as "([^"]*)"/, function(key, callback) {
+        this.stand.filterAreaAs(key).then(
+            function(google) {
+                //do nothing
+            }
+        ).then(callback, callback);
+    });
+
 	/*------------------------ Then ---------------------- --*/
 
 	// search result must have more than "1" record 
@@ -26,6 +35,18 @@ var google = function() {
         ).then(callback, callback);
     });
 
+    // first record title must start with "Yahoo奇摩"
+    Then(/first record title must start with "(.*)"/, function(request, callback) {
+        var request = new RegExp('^' + request +'\.*');
+
+        this.stand.getFirstRecordTitle().then(
+            function(title) {
+                expect(title, 'title is empty').to.not.be.empty;
+                expect(request.test(title), 'data match error').to.be.true;
+            }
+        ).then(callback, callback);
+    });
+
 
     // first record title must be "In 91 - 點部落"
     Then(/first record title must be "(.*)"/, function(key, callback) {
@@ -34,7 +55,7 @@ var google = function() {
     	this.stand.getFirstRecordTitle().then(
     		function(title) {
     			expect(title, 'title is empty').to.not.be.empty;
-    			expect(title, 'result title error').to.be.eq(request);
+    			expect(title, 'title error').to.be.eq(request);
     		}
     	).then(callback, callback);
     });

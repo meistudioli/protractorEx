@@ -14,5 +14,9 @@
 	{
 		"feature": "cucumber/google/google.feature",
 		"tags": "@C0002"
+	},
+	{
+		"feature": "cucumber/google/google.feature",
+		"tags": "@C0007"
 	}
 ]
