@@ -67,6 +67,7 @@ dragonKeeper = {
 	progress: 0,
 	dragon: 0,
 	scenario: 0,
+	os: '',
 	iid: '',
 	//method
 	loading: function(mode) {
@@ -97,10 +98,7 @@ dragonKeeper = {
 		return '[' + stamp + 'm' + str + '[0m';
 	},
 	catalysis: function(fileName, data) {
-		var path = this.destination + '/' + fileName + '.feature', amount;
-
-		amount = data.length;
-		this.scenario += amount;
+		var path = this.destination + '/' + fileName + '.feature.tmp', amount;
 
 		data.unshift('Feature: Dragon series - 「' + fileName + '」');
 		data = data.join('\n');
@@ -109,6 +107,9 @@ dragonKeeper = {
 		data = data.replace(/@X/gm, '');
 		data = data.replace(/(\n|\t|\r)+/g, '\n');
 		data = data.replace(/^(\s*@.*)/gm, '\n\n$&');
+
+		amount = data.match(/scenario:/gi).length;
+		this.scenario += amount;
 		
 		fs.writeFileSync(path, data, {encoding: 'utf8'});
 		this.dragon++;
@@ -118,6 +119,8 @@ dragonKeeper = {
 		console.log(this.color(fileName, 32) + ' is ready.');
 		data = (amount > 1) ? ' scenarios have' : ' scenarios has';
 		console.log(this.color(amount, 33) + data + ' been merged.');
+
+		data = null;
 	},
 	showDuration: function(isFinal) {
 		var time, info, tmp, timer = this.timer;
@@ -160,7 +163,18 @@ dragonKeeper = {
 		
 		if (!isFinal) info += "\n\n";
 		else {
-			var dividingLine = '', strips = {};
+			var dividingLine = '', strips = {}, features;
+
+			//rename xxx.feature.tmp --> xxx.feature
+			features = fs.readdirSync(this.destination);
+			features.forEach(
+				function(feature) {
+					if (/(.*)\.tmp$/.test(feature)) {
+						feature = dragonKeeper.destination + '/' + feature;
+						fs.renameSync(feature, feature.replace(/(.*)\.tmp$/, '$1'));
+					}//end if
+				}
+			);
 			
 			strips.info = info;
 			strips.infos = this.stripColor(strips.info);
@@ -226,8 +240,7 @@ dragonKeeper = {
 
 				if (!(e.tags instanceof Array)) e.tags = [e.tags];
 
-				comm = util.format('cucumber-js -f pretty %s --tags %s', e.feature.join(' '), e.tags.join(' --tags '));// OS: Windows
-				// comm = util.format('cucumber.js -f pretty %s --tags %s', e.feature.join(' '), e.tags.join(' --tags '));
+				comm = util.format('cucumber' + ((dragonKeeper.os == 'win32') ? '-' : '.') + 'js -f pretty %s --tags %s', e.feature.join(' '), e.tags.join(' --tags '));
 
 				exec(comm, function (error, stdout, stderr) {
 					var output = stdout;
@@ -263,6 +276,9 @@ dragonKeeper = {
 		        fs.unlinkSync(path);
 			}
 		);
+
+		//os
+		this.os = process.platform;
 
 		//get eggs
 		eggs = fs.readdirSync(this.source);

@@ -1,8 +1,6 @@
 var stepResultHooks = function() {
-	// var fs = require('fs'), dir = '/screenShots/';
-	// if (typeof __base != 'undefined') dir = __base + dir;
-
-	var fs = require('fs'), dir = __base + '/screenShots/';
+	var fs = require('fs'), dir = '/screenShots/';
+	if (typeof __base != 'undefined') dir = __base + dir;
 
 	this.StepResult(function (event, callBack) {
 		var stepResult = event.getPayloadItem('stepResult'), step = stepResult.getStep();
