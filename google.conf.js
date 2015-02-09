@@ -18,7 +18,11 @@ config = {
     suites: {
         google: 'cucumber/google/**/*.feature',
         googleNG: 'cucumber/googleNG/**/*.feature',
-        dragon: 'cucumber/dragon/**/*.feature'
+        
+        //system suites
+        all: 'cucumber/**/*.feature',
+        dragon: 'cucumber/dragon/**/*.feature',
+        failure: 'cucumber/dragon/failure.feature'
     },
 
     // ---------------------------------------------------------------------------
