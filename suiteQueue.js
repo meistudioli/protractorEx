@@ -174,7 +174,7 @@ suiteQueue = {
 			info += "\n\n";
 			this.logData(info);
 		} else {
-			var dividingLine = '', strips = {};
+			var dividingLine = '', strips = {}, path;
 			strips.assertion = this.getAssertions();
 			strips.info = info;
 
@@ -212,6 +212,23 @@ suiteQueue = {
 
 			//raw
 			fs.writeFileSync(this.resultPath + '/raw.log', this.stripColor(this.raw), {encoding: 'utf8'});
+
+			//failure
+			path = 'egg/failure.json';
+			if (fs.existsSync(path)) fs.unlinkSync(path);
+			if (this.data.failingScenario.length) {
+				strips = __dirname;
+				tmp = this.data.failingScenario.map(
+					function(e) {
+						var feature;
+						feature = e.replace(strips, '').slice(1);
+						feature = feature.replace(/(.*:\d+) # .*/, '$1').trim();
+						return {feature:feature, tags:''};
+					}
+				);
+				fs.writeFileSync(path, JSON.stringify(tmp, null, 4), {encoding: 'utf8'});
+			}//end if
+
 		}//end if
 		console.log(info);
 	},

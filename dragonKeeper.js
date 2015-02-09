@@ -233,7 +233,8 @@ dragonKeeper = {
 		seed.forEach(
 			function(e, idx) {
 				var comm;
-				if (!e.tags) return;
+				// if (!e.tags) return;
+				if (!e.tags) e.tags = '@E2E,@SMOKE,@REGRESSION,@FUNCTIONALITY';
 
 				if (!e.feature) e.feature = [featureRoot];
 				else if (!(e.feature instanceof Array)) e.feature = [e.feature];
@@ -244,6 +245,11 @@ dragonKeeper = {
 
 				exec(comm, function (error, stdout, stderr) {
 					var output = stdout;
+
+					output = output.replace(/\s*at\s.*\n/mg, '');
+					output = output.replace(/\s*.*failed steps.*\s*/g, '');
+					output = output.replace(/\s*ReferenceError.*/g, '');
+					output = output.replace(/Failing scenarios:[\s\S]*/mg, '');
 
 					output = output.replace(/\d+ scenario(|s)[\s\S]*/mg, '');
 					output = output.replace(/#.*:\d+/gm, '');
@@ -262,7 +268,13 @@ dragonKeeper = {
 		);
 	},
 	init: function() {
-		var eggs;
+		var eggs, args = process.argv.slice(2);
+
+		//source & destination
+		if (args.length) {
+			this.source = args[0];
+			if (typeof args[1] != 'undefined') this.destination = args[1];
+		}//end if
 
 		//mkdir
 		if (!fs.existsSync(this.source)) fs.mkdirSync(this.source);
