@@ -1,0 +1,29 @@
+[
+	{
+		"feature": "cucumber/google/google.feature",
+		"tags": "@C0004"
+	},
+	{
+		"feature": "cucumber/google/google.feature",
+		"tags": "@C0005"
+	},
+	{
+		"feature": "",
+		"tags": "@C0001"
+	},
+	{
+		"feature": "cucumber/google/",
+		"tags": "@C0002"
+	},
+	{
+		"feature": [
+			"cucumber/google/google.feature",
+			"cucumber/googleNG/googleNG.feature"
+		],
+		"tags": "@C0003,@NG0001"
+	},
+	{
+		"feature": "cucumber/google/google.feature",
+		"tags": "@C0007"
+	}
+]
