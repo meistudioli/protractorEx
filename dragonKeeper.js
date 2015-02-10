@@ -3,7 +3,7 @@
 /*
 	how to use:
 	1. put xxx.json into folder - egg
-	2. all element in json file must have the following structure and "tags" can't be null
+	2. all element in json file must have the following structure and "tags" can't be null(unless feature has match pattern /.*:\d+$/ )
 	example:
 	[
 		{
@@ -13,6 +13,10 @@
 		{
 			"feature": "cucumber/flow/flowMultiSpec.feature",
 			"tags": "@OFFSHELFBASIC"
+		},
+		{
+			"feature": "cucumber/flow/flowMultiSpec.feature:16",
+			"tags": ""
 		}
 	]
 
@@ -204,7 +208,8 @@ dragonKeeper = {
 			seed = [],
 			title,
 			dividingLine,
-			egg;
+			egg,
+			tmp;
 
 		this.showDuration();
 
@@ -217,7 +222,17 @@ dragonKeeper = {
 		path = util.format('%s/%s', this.source, egg);
 		fileName = egg.replace(/(.*).json/, '$1'),
 
-		seed = JSON.parse(fs.readFileSync(path, {encoding: 'utf8'}));
+		tmp = JSON.parse(fs.readFileSync(path, {encoding: 'utf8'}));
+		if (!tmp.length) return;
+		else {
+			//filter
+			tmp.forEach(
+				function(e, idx) {
+					if (!e.tags && !(/.*:\d+$/.test(e.feature))) return;
+					seed.push(e);
+				}
+			);
+		}//end if
 
 		if (!seed.length) return;
 
@@ -233,15 +248,15 @@ dragonKeeper = {
 		seed.forEach(
 			function(e, idx) {
 				var comm;
-				// if (!e.tags) return;
-				if (!e.tags) e.tags = '@E2E,@SMOKE,@REGRESSION,@FUNCTIONALITY';
-
 				if (!e.feature) e.feature = [featureRoot];
 				else if (!(e.feature instanceof Array)) e.feature = [e.feature];
 
-				if (!(e.tags instanceof Array)) e.tags = [e.tags];
-
-				comm = util.format('cucumber' + ((dragonKeeper.os == 'win32') ? '-' : '.') + 'js -f pretty %s --tags %s', e.feature.join(' '), e.tags.join(' --tags '));
+				if (!(e.tags instanceof Array) && !e.tags.length) comm = '';
+				else {
+					if (!(e.tags instanceof Array)) e.tags = [e.tags];
+					comm = util.format(' --tags %s', e.tags.join(' --tags '));
+				}//end if
+				comm = util.format('cucumber' + ((dragonKeeper.os == 'win32') ? '-' : '.') + 'js -f pretty %s', e.feature.join(' ')) + comm;
 
 				exec(comm, function (error, stdout, stderr) {
 					var output = stdout;
