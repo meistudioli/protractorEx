@@ -8,12 +8,3 @@ Feature: Dragon series - 「failure」
     And filter area as "國家/地區：台灣"                                            
     Then search result must have more than "1" record                        
     And first record title must start with "Yahoo奇摩"                         
-
-
-  @NG0005 @E2E
-  Scenario: login as "mei" & 搜尋 "yahoo", 第一筆資料顯示正確      
-    Given I login as account - "mei"                    
-    And I go to "google"                                
-    When I search "yahoo" from google                   
-    Then search result should have more than "1" record 
-    And first record title should be "Yahoo奇摩"          
