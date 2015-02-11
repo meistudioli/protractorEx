@@ -19,6 +19,7 @@ var exec = require('child_process').exec,
 suiteQueue = {
 	resultPath: 'result',
 	screenShotsPath: 'screenShots',
+	failurePath: 'egg',
 	conf: 'google.conf',// protractor conf filename
 	timer: [],
 	log: '',
@@ -214,8 +215,6 @@ suiteQueue = {
 			fs.writeFileSync(this.resultPath + '/raw.log', this.stripColor(this.raw), {encoding: 'utf8'});
 
 			//failure
-			path = 'egg/failure.json';
-			if (fs.existsSync(path)) fs.unlinkSync(path);
 			if (this.data.failingScenario.length) {
 				strips = __dirname;
 				tmp = this.data.failingScenario.map(
@@ -226,6 +225,7 @@ suiteQueue = {
 						return {feature:feature, tags:''};
 					}
 				);
+				path = this.failurePath + '/failure.json';
 				fs.writeFileSync(path, JSON.stringify(tmp, null, 4), {encoding: 'utf8'});
 			}//end if
 
@@ -249,6 +249,7 @@ suiteQueue = {
 		comm.push(act + 'activeMutant=off');
 		comm.push(act + 'clearResult=off');
 		comm.push(act + 'report=' + suite);
+		if (suite == 'all') comm.push(act + 'excludeMode=on');
 		for (var i=-1,l=params.length;++i<l;) comm.push(act + params[i]);
 		comm.push('protractor ' + suiteQueue.conf + '.js --suite ' + suite);
 		comm = comm.join((!act) ? ' ': ' & ');
@@ -314,7 +315,9 @@ suiteQueue = {
 
 	},
 	init: function() {
+		var path;
 		this.suites = process.argv.slice(2);
+		if (!this.suites.length) this.suites = ['all'];
 		
 		//data
 		this.data = {
@@ -344,6 +347,10 @@ suiteQueue = {
 		        fs.unlinkSync(path);
 		    }
 		);
+
+		//unlink failure
+		path = this.failurePath + '/failure.json';
+		if (fs.existsSync(path)) fs.unlinkSync(path);
 
 		//os
 		this.os = process.platform;
