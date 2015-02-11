@@ -39,7 +39,7 @@ config = {
     // ---------------------------------------------------------------------------
 
     beforeLaunch: function() {
-        var resultPath = 'result', screenShotsPath = 'screenShots';
+        var resultPath = 'result', screenShotsPath = 'screenShots', failure = 'egg/failure.json';
         if (!fs.existsSync(resultPath)) fs.mkdirSync(resultPath);
         if (!fs.existsSync(screenShotsPath)) fs.mkdirSync(screenShotsPath);
 
@@ -60,6 +60,8 @@ config = {
                     fs.unlinkSync(path);
                 }
             );
+            //unlink failure
+            if (fs.existsSync(failure)) fs.unlinkSync(failure);
         }//end if
     },
     onPrepare: function() {
@@ -109,7 +111,8 @@ env = {
     tags: process.env.tags || '@E2E,@SMOKE,@REGRESSION,@FUNCTIONALITY',
     parallel: process.env.parallel || 'off',
     report: process.env.report || 'result',
-    clearResult: process.env.clearResult || 'on'
+    clearResult: process.env.clearResult || 'on',
+    excludeMode: process.env.excludeMode || 'off'
 };
 for (var i in env) env[i] = env[i].trim();
 
@@ -123,6 +126,13 @@ if (env.parallel == 'on') {
         shardTestFiles: true,
         maxInstances: 3
     };
+}//end if
+
+if (env.excludeMode == 'on') {
+    //set exclude attribute
+    config.exclude = [
+        'cucumber/dragon/**/*.feature'
+    ];
 }//end if
 
 exports.config = config;
