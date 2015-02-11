@@ -1,0 +1,92 @@
+[
+  {
+    "description": "頁面 header 是否存在",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 2597818643
+  },
+  {
+    "description": "頁面 footer 是否存在",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 356398635
+  },
+  {
+    "description": "頁面 logo 是否存在",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 325802384
+  },
+  {
+    "description": "搜尋 \"google\", 第一筆資料顯示正確",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 1572306138
+  },
+  {
+    "description": "login as \"mei\" & 搜尋 \"yahoo\", 第一筆資料顯示正確",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 5145083666
+  }
+]

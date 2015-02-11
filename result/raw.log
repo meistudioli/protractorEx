@@ -1,0 +1,31 @@
+Using the selenium server at http://localhost:4444/wd/hub
+[launcher] Running 1 instances of WebDriver
+WARNING - more than one element found for locator By.cssSelector("#ires li") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("a") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("#ires li") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("a") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("#ires li") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("a") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("#ires li") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("a") - the first result will be used
+(::) failed steps (::)
+
+AssertionError: title is empty: expected '' not to be empty
+
+
+
+Failing scenarios:
+C:\WWW\automation_google\cucumber\google\google.feature:51 # Scenario: 搜尋 "yahoo", 且選擇限縮地區為 "國家/地區：台灣", 呈現的第一筆資料 title 必須要有 "Yahoo奇摩"
+
+8 scenarios (1 failed, 7 passed)
+28 steps (1 failed, 27 passed)
+[launcher] 0 instance(s) of WebDriver still running
+
+Using the selenium server at http://localhost:4444/wd/hub
+[launcher] Running 1 instances of WebDriver
+WARNING - more than one element found for locator By.cssSelector("a") - the first result will be used
+WARNING - more than one element found for locator By.cssSelector("a") - the first result will be used
+5 scenarios (5 passed)
+15 steps (15 passed)
+[launcher] 0 instance(s) of WebDriver still running
+

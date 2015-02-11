@@ -1,0 +1,160 @@
+[
+  {
+    "description": "頁面 header 是否存在",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 2788969919
+  },
+  {
+    "description": "頁面 footer 是否存在",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 261802410
+  },
+  {
+    "description": "頁面 logo 是否存在",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 248109389
+  },
+  {
+    "description": "搜尋 \"google\", 第一筆資料顯示正確",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 1400389922
+  },
+  {
+    "description": "login as \"mei\" & 搜尋 \"yahoo\", 第一筆資料顯示正確",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 5442186694
+  },
+  {
+    "description": "login as \"mei\" & 搜尋 \"in 91\", 第一筆資料顯示正確",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 2040014891
+  },
+  {
+    "description": "搜尋 \"yahoo\", 且選擇限縮地區為 \"國家/地區：台灣\", 呈現的第一筆資料 title 必須要有 \"Yahoo奇摩\"",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": false,
+        "errorMsg": "title is empty: expected '' not to be empty",
+        "stackTrace": "AssertionError: title is empty: expected '' not to be empty\n\n"
+      }
+    ],
+    "duration": 3883633738
+  },
+  {
+    "description": "login as \"mei\" & 點擊 Gmail 必須要能正確轉址",
+    "assertions": [
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      },
+      {
+        "passed": true
+      }
+    ],
+    "duration": 4272972138
+  }
+]
