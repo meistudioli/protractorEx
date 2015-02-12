@@ -13,16 +13,16 @@ config = {
     // ---------------------------------------------------------------------------
     
     specs: [
-        'cucumber/**/*.feature'
+        'features/**/*.feature'
     ],
     suites: {
-        google: 'cucumber/google/**/*.feature',
-        googleNG: 'cucumber/googleNG/**/*.feature',
+        google: 'features/google.feature',
+        googleNG: 'features/googleNG.feature',
         
         //system suites
-        all: 'cucumber/**/*.feature',
-        dragon: 'cucumber/dragon/**/*.feature',
-        failure: 'cucumber/dragon/failure.feature'
+        all: 'features/**/*.feature',
+        dragon: 'features/dragon/**/*.feature',
+        failure: 'features/dragon/failure.feature'
     },
 
     // ---------------------------------------------------------------------------
@@ -96,7 +96,7 @@ config = {
     
     framework: 'cucumber',
     cucumberOpts: {
-        require: 'cucumber/**/*.js',
+        require: 'features/**/*.js',
         tags: [
             process.env.tags || '@E2E,@SMOKE,@REGRESSION,@FUNCTIONALITY',
             '~@X'
@@ -131,7 +131,7 @@ if (env.parallel == 'on') {
 if (env.excludeMode == 'on') {
     //set exclude attribute
     config.exclude = [
-        'cucumber/dragon/**/*.feature'
+        'features/dragon/**/*.feature'
     ];
 }//end if
 

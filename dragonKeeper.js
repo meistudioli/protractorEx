@@ -54,7 +54,7 @@
 
 'use strict';
 
-var featureRoot = 'cucumber',
+var featureRoot = 'features',
 	fs          = require('fs'),
 	util        = require('util'),
 	exec        = require('child_process').exec,
