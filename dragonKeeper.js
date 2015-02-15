@@ -54,15 +54,17 @@
 
 'use strict';
 
-var featureRoot = 'features',
-	fs          = require('fs'),
-	util        = require('util'),
-	exec        = require('child_process').exec,
+var featureRoot    = 'features',
+	stepDefinition = 'features/steps',
+	fs             = require('fs'),
+	util           = require('util'),
+	exec           = require('child_process').exec,
 	dragonKeeper;
 
 dragonKeeper = {
 	source: 'egg',
 	destination: featureRoot + '/dragon',
+	stepDefinition: stepDefinition || '',
 	hatched: 0,
 	eggAmount: 0,
 	eggs: [],
@@ -257,6 +259,7 @@ dragonKeeper = {
 					comm = util.format(' --tags %s', e.tags.join(' --tags '));
 				}//end if
 				comm = util.format('cucumber' + ((dragonKeeper.os == 'win32') ? '-' : '.') + 'js -f pretty %s', e.feature.join(' ')) + comm;
+				if (stepDefinition) comm += ' --require ' + stepDefinition;
 
 				exec(comm, function (error, stdout, stderr) {
 					var output = stdout;
