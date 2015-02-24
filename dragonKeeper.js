@@ -114,7 +114,8 @@ dragonKeeper = {
 		data = data.replace(/(\n|\t|\r)+/g, '\n');
 		data = data.replace(/^(\s*@.*)/gm, '\n\n$&');
 
-		amount = data.match(/scenario:/gi).length;
+		amount = data.match(/scenario:/gi);
+		amount = (amount) ? amount.length : 0;
 		this.scenario += amount;
 		
 		fs.writeFileSync(path, data, {encoding: 'utf8'});
