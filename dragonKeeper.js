@@ -53,23 +53,24 @@
 */
 
 'use strict';
-
 var featureRoot    = 'features',
 	stepDefinition = 'features/steps',
 	fs             = require('fs'),
 	util           = require('util'),
 	exec           = require('child_process').exec,
+	tRy            = require('./lib/tRy'),
+	getopt         = require('./lib/getopt'),
 	dragonKeeper;
 
 dragonKeeper = {
 	source: 'egg',
 	destination: featureRoot + '/dragon',
 	stepDefinition: stepDefinition || '',
+	tags: '',
 	hatched: 0,
 	eggAmount: 0,
 	eggs: [],
 	timer: [],
-	stamps: [30, 31, 32, 33, 34, 35, 36, 37], //black, red, green, yellow, blue, magenta, cyan, white
 	progress: 0,
 	dragon: 0,
 	scenario: 0,
@@ -96,23 +97,19 @@ dragonKeeper = {
 			}
 		, 250);
 	},
-	stripColor: function(str) {
-		return str.replace(/\\[\d{1,2}m/g, '');
-	},
-	color: function(str, stamp) {
-		var stamp = (this.stamps.indexOf(stamp) == -1) ? this.stamps[this.stamps.length-1] : stamp;
-		return '[' + stamp + 'm' + str + '[0m';
-	},
 	catalysis: function(fileName, data) {
 		var path = this.destination + '/' + fileName + '.feature.tmp', amount;
 
 		data.unshift('Feature: Dragon series - 「' + fileName + '」');
 		data = data.join('\n');
 
-		data = this.stripColor(data);
+		data = tRy.stripColor(data);
 		data = data.replace(/@X/gm, '');
 		data = data.replace(/(\n|\t|\r)+/g, '\n');
 		data = data.replace(/^(\s*@.*)/gm, '\n\n$&');
+
+		//tags
+		if (this.tags) data = this.tags + '\n' + data;
 
 		amount = data.match(/scenario:/gi);
 		amount = (amount) ? amount.length : 0;
@@ -123,9 +120,9 @@ dragonKeeper = {
 
 		this.loading('off');
 
-		console.log(this.color(fileName, 32) + ' is ready.');
-		data = (amount > 1) ? ' scenarios have' : ' scenarios has';
-		console.log(this.color(amount, 33) + data + ' been merged.');
+		console.log(tRy.color(fileName, 32) + ' is ready.');
+		data = (amount > 1) ? ' scenarios have' : ' scenario has';
+		console.log(tRy.color(amount, 33) + data + ' been merged.');
 
 		data = null;
 	},
@@ -147,7 +144,7 @@ dragonKeeper = {
 		if (time > 3600) {
 			//hour
 			tmp = Math.floor(time / 3600);
-			info.push(this.color(tmp, 36));
+			info.push(tRy.color(tmp, 36));
 			info.push('hour' + ((tmp > 1) ? 's' : ''));
 			time = time % 3600;
 		}//end if
@@ -155,14 +152,14 @@ dragonKeeper = {
 		if (time > 60) {
 			//minute
 			tmp = Math.floor(time / 60);
-			info.push(this.color(tmp, 36));
+			info.push(tRy.color(tmp, 36));
 			info.push('minute' + ((tmp > 1) ? 's' : ''));
 			time = time % 60;		
 		}//end if
 
 		if (time >= 0) {
 			//second
-			info.push(this.color(time, 36));
+			info.push(tRy.color(time, 36));
 			info.push('second' + ((time > 1) ? 's' : ''));
 		}//end if
 
@@ -184,18 +181,18 @@ dragonKeeper = {
 			);
 			
 			strips.info = info;
-			strips.infos = this.stripColor(strips.info);
+			strips.infos = tRy.stripColor(strips.info);
 			strips.cong = 'All eggs has beed catalysis.';
 			strips.dragon = (this.dragon > 1) ? ' dragons have' : ' dragon has';
-			strips.dragon = this.color(this.dragon, 32) + strips.dragon + ' flied away.';
-			strips.dragons = this.stripColor(strips.dragon);
+			strips.dragon = tRy.color(this.dragon, 32) + strips.dragon + ' flied away.';
+			strips.dragons = tRy.stripColor(strips.dragon);
 			strips.scenario = (this.scenario > 1) ? ' scenarios have' : ' scenario has';
-			strips.scenario = this.color(this.scenario, 33) + strips.scenario + ' been active.';
-			strips.scenarios = this.stripColor(strips.scenario);
+			strips.scenario = tRy.color(this.scenario, 33) + strips.scenario + ' been active.';
+			strips.scenarios = tRy.stripColor(strips.scenario);
 			strips.max = Math.max(strips.cong.length, strips.infos.length, strips.dragons.length, strips.scenarios.length);
 
 			for (var i=-1,l=strips.max;++i<l;) dividingLine += '-';
-			info = [dividingLine, strips.cong, '', strips.dragon, strips.scenario, strips.info, dividingLine]
+			info = [dividingLine, strips.cong, '', strips.dragon, strips.scenario, strips.info, dividingLine];
 			info = info.join('\n');
 
 			for (var i in strips) strips[i] = null;
@@ -287,13 +284,32 @@ dragonKeeper = {
 		);
 	},
 	init: function() {
-		var eggs, args = process.argv.slice(2);
+		var eggs, opts, sets;
 
-		//source & destination
-		if (args.length) {
-			this.source = args[0];
-			if (typeof args[1] != 'undefined') this.destination = args[1];
-		}//end if
+		opts = getopt.script('node dragonKeeper.js')
+				.options(
+					{
+						source: {
+							abbr: 's',
+							default: 'egg',
+							help: 'set path for dragon eggs, ex: ./egg'
+						},
+						destination: {
+							abbr: 'd',
+							default: featureRoot + '/dragon',
+							help: 'set path for dragons, ex: ./features/dragon'
+						},
+						tags: {
+							abbr: 't',
+							help: 'set tags for dragons'
+						}
+					}
+				)
+				.parse();
+
+		sets = ['source', 'destination', 'tags'];
+		for (var i=-1,l=sets.length;++i<l;) if (opts[sets[i]]) this[sets[i]] = opts[sets[i]];
+		if (this.tags && typeof this.tags != 'boolean') this.tags = this.tags.replace(/,/g, ' ');
 
 		//mkdir
 		if (!fs.existsSync(this.source)) fs.mkdirSync(this.source);

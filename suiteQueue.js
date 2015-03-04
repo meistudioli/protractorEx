@@ -10,10 +10,12 @@
 	example:
 	node suiteQueue.js mutantOn myAuc+multiThread=on mutantOff
 */
-'use strict';
 
-var exec = require('child_process').exec,
-	fs   = require('fs'),
+'use strict';
+var exec   = require('child_process').exec,
+	fs     = require('fs'),
+	tRy    = require('./lib/tRy'),
+	getopt = require('./lib/getopt'),
 	suiteQueue;
 
 suiteQueue = {
@@ -25,7 +27,6 @@ suiteQueue = {
 	log: '',
 	raw: '',
 	data: {},
-	stamps: [30, 31, 32, 33, 34, 35, 36, 37], //black, red, green, yellow, blue, magenta, cyan, white
 	suites: [],
 	os: '',
 	iid: '',
@@ -74,14 +75,14 @@ suiteQueue = {
 
 		results = passed + failed;
 		results = results + ' assertion' + ((results > 1) ? 's' : '') + ' (';
-		if (failed) results += this.color(failed + ' failed', 31) + ', ';
-		results += this.color(passed + ' passed', 32) + ')';
+		if (failed) results += tRy.color(failed + ' failed', 31) + ', ';
+		results += tRy.color(passed + ' passed', 32) + ')';
 
 		return results;
 	},
 	dataPlug: function(rawData) {
 		var tmp = {}, result = rawData;
-		result = this.stripColor(result);
+		result = tRy.stripColor(result);
 		result = result.replace(/^\[.*#\d+\w\]/gim, '');
 		result = result.replace(/^\s+/gim, '');
 
@@ -122,13 +123,6 @@ suiteQueue = {
 		});
 		return tmp;
 	},
-	stripColor: function(str) {
-		return str.replace(/\\[\d{1,2}m/g, '');
-	},
-	color: function(str, stamp) {
-		var stamp = (this.stamps.indexOf(stamp) == -1) ? this.stamps[this.stamps.length-1] : stamp;
-		return '[' + stamp + 'm' + str + '[0m';
-	},
 	logData: function(str) {
 		this.log += str + "\n";
 	},
@@ -150,7 +144,7 @@ suiteQueue = {
 		if (time > 3600) {
 			//hour
 			tmp = Math.floor(time / 3600);
-			info.push(this.color(tmp, 36));
+			info.push(tRy.color(tmp, 36));
 			info.push('hour' + ((tmp > 1) ? 's' : ''));
 			time = time % 3600;
 		}//end if
@@ -158,14 +152,14 @@ suiteQueue = {
 		if (time > 60) {
 			//minute
 			tmp = Math.floor(time / 60);
-			info.push(this.color(tmp, 36));
+			info.push(tRy.color(tmp, 36));
 			info.push('minute' + ((tmp > 1) ? 's' : ''));
 			time = time % 60;		
 		}//end if
 
 		if (time > 0) {
 			//second
-			info.push(this.color(time, 36));
+			info.push(tRy.color(time, 36));
 			info.push('second' + ((time > 1) ? 's' : ''));		
 		}//end if
 
@@ -185,17 +179,17 @@ suiteQueue = {
 					var d = suiteQueue.data[key], tmp = '', arr = [];
 					tmp = d.passed + d.failed + d.skipped;
 					tmp = tmp + ' ' + key + ((tmp > 1) ? 's' : '') + ' (';
-					if (d.failed) arr.push(suiteQueue.color(d.failed + ' failed', 31));
-					if (d.skipped) arr.push(suiteQueue.color(d.skipped + ' skipped', 36));
-					if (d.passed) arr.push(suiteQueue.color(d.passed + ' passed', 32));
+					if (d.failed) arr.push(tRy.color(d.failed + ' failed', 31));
+					if (d.skipped) arr.push(tRy.color(d.skipped + ' skipped', 36));
+					if (d.passed) arr.push(tRy.color(d.passed + ' passed', 32));
 					strips[key] = tmp + arr.join(', ') + ')';
 				}
 			);
 
-			strips.scenarios = this.stripColor(strips.scenario);
-			strips.steps = this.stripColor(strips.step);
-			strips.assertions = this.stripColor(strips.assertion);
-			strips.infos = this.stripColor(strips.info);
+			strips.scenarios = tRy.stripColor(strips.scenario);
+			strips.steps = tRy.stripColor(strips.step);
+			strips.assertions = tRy.stripColor(strips.assertion);
+			strips.infos = tRy.stripColor(strips.info);
 			strips.max = Math.max(strips.scenarios.length, strips.steps.length, strips.assertions.length, strips.infos.length);
 
 			for (var i=-1,l=strips.max;++i<l;) dividingLine += '-';
@@ -209,10 +203,10 @@ suiteQueue = {
 			this.logData(info);
 
 			//log
-			fs.writeFileSync(this.resultPath + '/result.log', this.stripColor(this.log), {encoding: 'utf8'});
+			fs.writeFileSync(this.resultPath + '/result.log', tRy.stripColor(this.log), {encoding: 'utf8'});
 
 			//raw
-			fs.writeFileSync(this.resultPath + '/raw.log', this.stripColor(this.raw), {encoding: 'utf8'});
+			fs.writeFileSync(this.resultPath + '/raw.log', tRy.stripColor(this.raw), {encoding: 'utf8'});
 
 			//failure
 			if (this.data.failingScenario.length) {
@@ -246,7 +240,6 @@ suiteQueue = {
 
 		//comm
 		act = (suiteQueue.os == 'win32') ? 'set ' : '';
-		comm.push(act + 'activeMutant=off');
 		comm.push(act + 'clearResult=off');
 		comm.push(act + 'report=' + suite);
 		if (suite == 'all') comm.push(act + 'excludeMode=on');
@@ -297,9 +290,9 @@ suiteQueue = {
 					var d = result[key], tmp = '', arr = [];
 					tmp = d.passed + d.failed + d.skipped;
 					tmp = tmp + ' ' + key + ((tmp > 1) ? 's' : '') + ' (';
-					if (d.failed) arr.push(suiteQueue.color(d.failed + ' failed', 31));
-					if (d.skipped) arr.push(suiteQueue.color(d.skipped + ' skipped', 36));
-					if (d.passed) arr.push(suiteQueue.color(d.passed + ' passed', 32));
+					if (d.failed) arr.push(tRy.color(d.failed + ' failed', 31));
+					if (d.skipped) arr.push(tRy.color(d.skipped + ' skipped', 36));
+					if (d.passed) arr.push(tRy.color(d.passed + ' passed', 32));
 					tmp += arr.join(', ') + ')';
 					display.push('\n'+tmp);
 				}
@@ -315,9 +308,21 @@ suiteQueue = {
 
 	},
 	init: function() {
-		var path;
-		this.suites = process.argv.slice(2);
-		if (!this.suites.length) this.suites = ['all'];
+		var path, opts;
+
+		opts = getopt.script('node suiteQueue.js')
+				.options(
+					{
+						suites: {
+							position: 0,
+							default: 'all',
+							list: true,
+							help: 'set suite queue'
+						}
+					}
+				)
+				.parse();
+		this.suites = opts.suites;
 		
 		//data
 		this.data = {
