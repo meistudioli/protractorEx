@@ -8,3 +8,4 @@
 * [Protractor - Enhance 篇 - Trouble Shooting](https://www.facebook.com/notes/paul-li/protractor-enhance-%E7%AF%87-trouble-shooting/10152956325467211)
 * [Protractor - Enhance 篇 - Run Scenario(s) in serial](https://www.facebook.com/notes/paul-li/protractor-enhance-%E7%AF%87-run-scenarios-in-serial/10152962969242211)
 * [Protractor - Enhance 篇 - Run Suite(s) in serial](https://www.facebook.com/notes/paul-li/protractor-enhance-%E7%AF%87-run-suites-in-serial/10152966936232211)
+* [Protractor - Enhance 篇 - Convert features to document](https://www.facebook.com/notes/10153169915752211/?pnref=story)
